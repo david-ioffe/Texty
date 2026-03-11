@@ -1,16 +1,11 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack, useRouter, useSegments } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-
-import { auth } from "../firebase";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { Slot, useRouter, useSegments } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import 'react-native-reanimated';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -29,30 +24,29 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (user === undefined) return;
+    if (segments.length === 0) return;
 
-    const inTabsGroup = segments[0] === "(tabs)";
-    const inLoginPage = segments[0] === "login";
+    const firstSegment = String(segments[0] ?? "");
+    const inAuthGroup = firstSegment === "(auth)";
+    const inTabsGroup = firstSegment === "(tabs)";
 
-    if (!user && !inLoginPage) {
-      router.replace("/login");
+    if (!user && !inAuthGroup) {
+      router.replace("/(auth)/phone");
+      return;
     }
 
     if (user && !inTabsGroup) {
       router.replace("/(tabs)");
     }
-  }, [user, segments, router]);
+  }, [user, segments]);
 
   if (user === undefined) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal", title: "Modal" }} />
-      </Stack>
+    <ThemeProvider value={colorScheme === 'light' ? DarkTheme : DefaultTheme}>
+      <Slot />
       <StatusBar style="auto" />
     </ThemeProvider>
   );
