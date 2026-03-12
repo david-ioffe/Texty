@@ -206,6 +206,9 @@ def verify_code(body: VerifyCodeBody):
 
 # =========================
 # Run server
+# In order to see what IP Addres the Server
+# uses, please type ipconfig into the comand line
+# then in the IPV4 section will be the current IP.
 # =========================
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0",
