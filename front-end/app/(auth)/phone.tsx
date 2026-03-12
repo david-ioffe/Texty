@@ -30,13 +30,17 @@ export default function PhoneScreen() {
 
      setLoading(true);
 
-     const response = await fetch("http://YOUR_BACKEND/send-phone", {
+     const response = await fetch("http://10.0.0.16:8000/auth/send-code", {
        method: "POST",
        headers: {
          "Content-Type": "application/json"
        },
        body: JSON.stringify({
-         phone: phone
+         phone: phone,
+         recaptcha_token : null,
+         captcha_response : null,
+         client_type : null,
+         recaptcha_version : null
        })
      });
 
@@ -53,8 +57,8 @@ export default function PhoneScreen() {
      });
 
    } catch (e) {
-
-     setError("לא ניתן להתחבר לשרת");
+    // "לא ניתן להתחבר לשרת"
+     setError(e.message);
 
    } finally {
 
